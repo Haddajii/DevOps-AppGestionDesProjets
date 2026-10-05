@@ -1,0 +1,45 @@
+services:
+
+  db:
+    image: mysql:8.4
+    container_name: project-db
+    environment:
+      MYSQL_DATABASE: test_db
+      MYSQL_ROOT_PASSWORD: root
+    volumes:
+      - mysql_data:/var/lib/mysql
+    networks:
+      - project-network
+
+  backend:
+    build:
+      context: ./backend
+    container_name: project-backend
+    depends_on:
+      - db
+    environment:
+      SPRING_DATASOURCE_URL: jdbc:mysql://db:3306/test_db?createDatabaseIfNotExist=true
+      SPRING_DATASOURCE_USERNAME: root
+      SPRING_DATASOURCE_PASSWORD: root
+    ports:
+      - "8080:8080"
+    networks:
+      - project-network
+
+  frontend:
+    build:
+      context: ./frontend
+    container_name: project-frontend
+    depends_on:
+      - backend
+    ports:
+      - "4200:80"
+    networks:
+      - project-network
+
+volumes:
+  mysql_data:
+
+networks:
+  project-network:
+    driver: bridge
