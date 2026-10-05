@@ -3,12 +3,6 @@ pipeline {
 
     stages {
 
-        stage('Checkout') {
-            steps {
-                git 'https://github.com/Alaa-Rami/DevOps-AppGestionDesProjets.git'
-            }
-        }
-
         stage('Build Docker Images') {
             steps {
                 sh 'docker compose build'
